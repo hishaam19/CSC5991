@@ -27,6 +27,9 @@ jobs:
 
       - name: Run a one-line script
         run: echo Hello, world!
+      
+      - name: list directory
+        run: ls
         
       - name: Login to dockerhub
         run: docker login --username=jmackie17 --password=${{ secrets.DOCKER_HUB_TOKEN }}
