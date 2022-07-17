@@ -29,7 +29,7 @@ jobs:
         run: echo Hello, world!
         
       - name: Login to dockerhub
-        run: docker login --username=${{ secrets.DOCKER_HUB_TOKEN }}
+        run: docker login --username=jmackie17 --password=${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and Push Availability Container
         run: |
