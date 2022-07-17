@@ -36,9 +36,9 @@ jobs:
 
       - name: Build and Push Availability Container
         run: |
-          cd Microservices/Availability,
-          docker build -t availability .,
-          docker tag availability jmackie17/csc5991:availability,
+          cd Microservices/Availability
+          docker build -t availability .
+          docker tag availability jmackie17/csc5991:availability
           docker push jmackie17/csc5991:availability
           
           
