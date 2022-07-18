@@ -16,6 +16,6 @@ spec:
       - name: calendar
         image: jmackie17/csc5991:calendar
         ports:
-        - containerPort: 80
+        - containerPort: 8080
       imagePullSecrets:
       - name: regcred

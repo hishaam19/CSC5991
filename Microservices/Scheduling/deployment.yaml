@@ -16,6 +16,6 @@ spec:
       - name: scheduling
         image: jmackie17/csc5991:scheduling
         ports:
-        - containerPort: 80
+        - containerPort: 8080
       imagePullSecrets:
       - name: regcred

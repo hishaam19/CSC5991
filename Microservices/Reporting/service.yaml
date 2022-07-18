@@ -6,6 +6,6 @@ spec:
   selector:
     app: reporting
   ports:
-    - port: 8007
+    - port: 8080
       targetPort: 80
   type: NodePort

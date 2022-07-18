@@ -6,6 +6,6 @@ spec:
   selector:
     app: scheduling
   ports:
-    - port: 8008
+    - port: 8080
       targetPort: 80
   type: NodePort
