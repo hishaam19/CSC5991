@@ -1,11 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: candidate
+  name: candidate-service
+  labels:
+    app: candidate
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
 spec:
   selector:
     app: candidate
   ports:
-    - port: 80
-      targetPort: 80
-  type: NodePort
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
