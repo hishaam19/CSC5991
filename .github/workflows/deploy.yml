@@ -68,7 +68,7 @@ jobs:
           docker tag communications jmackie17/csc5991:communications
           docker push jmackie17/csc5991:communications
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Configuration Container
         run: |
