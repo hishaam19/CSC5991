@@ -27,6 +27,12 @@ jobs:
         
       - name: Login to dockerhub
         run: docker login --username=jmackie17 --password=${{ secrets.DOCKER_HUB_TOKEN }}
+        
+      - name: Login to okteto
+        run: | 
+          curl https://get.okteto.com -sSfL | sh
+          okteto context use https://cloud.okteto.com --token ${{ secrets.OKTETO_TOKEN }}
+          okteto kubeconfig
 
       - name: Build and Push Availability Container
         run: |
@@ -34,6 +40,8 @@ jobs:
           docker build -t availability .
           docker tag availability jmackie17/csc5991:availability
           docker push jmackie17/csc5991:availability
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Calendar Container
         run: |
@@ -41,6 +49,8 @@ jobs:
           docker build -t calendar .
           docker tag calendar jmackie17/csc5991:calendar
           docker push jmackie17/csc5991:calendar
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
         
       - name: Build and Push Candidate Container
         run: |
@@ -48,6 +58,8 @@ jobs:
           docker build -t candidate .
           docker tag candidate jmackie17/csc5991:candidate
           docker push jmackie17/csc5991:candidate
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Communications Container
         run: |
@@ -55,6 +67,8 @@ jobs:
           docker build -t communications .
           docker tag communications jmackie17/csc5991:communications
           docker push jmackie17/csc5991:communications
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Configuration Container
         run: |
@@ -62,6 +76,8 @@ jobs:
           docker build -t configuration .
           docker tag configuration jmackie17/csc5991:configuration
           docker push jmackie17/csc5991:configuration
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Employee Container
         run: |
@@ -69,6 +85,8 @@ jobs:
           docker build -t employee .
           docker tag employee jmackie17/csc5991:employee
           docker push jmackie17/csc5991:employee
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Gatekeeper Container
         run: |
@@ -76,6 +94,8 @@ jobs:
           docker build -t gatekeeper .
           docker tag gatekeeper jmackie17/csc5991:gatekeeper
           docker push jmackie17/csc5991:gatekeeper
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Reporting Container
         run: |
@@ -83,6 +103,8 @@ jobs:
           docker build -t reporting .
           docker tag reporting jmackie17/csc5991:reporting
           docker push jmackie17/csc5991:reporting
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Scheduling Container
         run: |
@@ -90,6 +112,8 @@ jobs:
           docker build -t scheduling .
           docker tag scheduling jmackie17/csc5991:scheduling
           docker push jmackie17/csc5991:scheduling
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
           
       - name: Build and Push Security Container
         run: |
@@ -97,3 +121,5 @@ jobs:
           docker build -t security .
           docker tag security jmackie17/csc5991:security
           docker push jmackie17/csc5991:security
+          kubectl apply -f deployment.yaml
+          kubectl apply -f services.yaml
