@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: calendar
+  name: security
 spec:
   replicas: 1
   selector:
@@ -13,9 +13,9 @@ spec:
         app: calendar
     spec:
       containers:
-        - name: calendar
-          image: jmackie17/csc5991:calendar
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: calendar
+        image: jmackie17/csc5991:calendar
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

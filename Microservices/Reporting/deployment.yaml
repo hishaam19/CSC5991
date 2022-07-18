@@ -13,9 +13,9 @@ spec:
         app: reporting
     spec:
       containers:
-        - name: reporting
-          image: jmackie17/csc5991:reporting
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: reporting
+        image: jmackie17/csc5991:reporting
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

@@ -13,9 +13,9 @@ spec:
         app: scheduling
     spec:
       containers:
-        - name: scheduling
-          image: jmackie17/csc5991:scheduling
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: scheduling
+        image: jmackie17/csc5991:scheduling
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

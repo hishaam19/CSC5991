@@ -13,9 +13,9 @@ spec:
         app: security
     spec:
       containers:
-        - name: security
-          image: jmackie17/csc5991:security
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: security
+        image: jmackie17/csc5991:security
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

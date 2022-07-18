@@ -13,9 +13,9 @@ spec:
         app: communications
     spec:
       containers:
-        - name: communications
-          image: jmackie17/csc5991:communications
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: communications
+        image: jmackie17/csc5991:communications
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

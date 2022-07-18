@@ -13,9 +13,9 @@ spec:
         app: gatekeeper
     spec:
       containers:
-        - name: gatekeeper
-          image: jmackie17/csc5991:gatekeeper
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: gatekeeper
+        image: jmackie17/csc5991:gatekeeper
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
