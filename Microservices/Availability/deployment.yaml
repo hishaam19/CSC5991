@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: availability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: availability
+  template:
+    metadata:
+      labels:
+        app: availability
+    spec:
+      containers:
+        - name: availability
+          image: jmackie17/csc5991:availability
+          ports:
+            - containerPort: 80
+        imagePullSecrets:
+          - name: regcred

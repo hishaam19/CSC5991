@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: candidate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: candidate
+  template:
+    metadata:
+      labels:
+        app: candidate
+    spec:
+      containers:
+        - name: candidate
+          image: jmackie17/csc5991:candidate
+          ports:
+            - containerPort: 80
+        imagePullSecrets:
+          - name: regcred

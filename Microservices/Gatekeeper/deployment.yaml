@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatekeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatekeeper
+  template:
+    metadata:
+      labels:
+        app: gatekeeper
+    spec:
+      containers:
+        - name: gatekeeper
+          image: jmackie17/csc5991:gatekeeper
+          ports:
+            - containerPort: 80
+        imagePullSecrets:
+          - name: regcred
