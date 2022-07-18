@@ -13,9 +13,9 @@ spec:
         app: availability
     spec:
       containers:
-        - name: availability
-          image: jmackie17/csc5991:availability
-          ports:
-            - containerPort: 80
-        imagePullSecrets:
-          - name: regcred
+      - name: availability
+        image: jmackie17/csc5991:availability
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
