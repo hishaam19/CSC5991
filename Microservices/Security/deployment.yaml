@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: security
+  name: securityservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: security
+      app: securityservice
   template:
     metadata:
       labels:
-        app: security
+        app: securityservice
     spec:
       containers:
-      - name: security
+      - name: securityservice
         image: jmackie17/csc5991:security
         ports:
         - containerPort: 80
