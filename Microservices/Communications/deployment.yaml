@@ -16,6 +16,6 @@ spec:
       - name: communications
         image: jmackie17/csc5991:communications
         ports:
-        - containerPort: 80
+        - containerPort: 8080
       imagePullSecrets:
       - name: regcred

@@ -16,6 +16,6 @@ spec:
       - name: candidate
         image: jmackie17/csc5991:candidate
         ports:
-        - containerPort: 80
+        - containerPort: 8080
       imagePullSecrets:
       - name: regcred
