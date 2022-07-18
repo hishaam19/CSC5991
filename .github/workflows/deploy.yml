@@ -41,7 +41,7 @@ jobs:
           docker tag availability jmackie17/csc5991:availability
           docker push jmackie17/csc5991:availability
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Calendar Container
         run: |
@@ -50,7 +50,7 @@ jobs:
           docker tag calendar jmackie17/csc5991:calendar
           docker push jmackie17/csc5991:calendar
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
         
       - name: Build and Push Candidate Container
         run: |
@@ -59,7 +59,7 @@ jobs:
           docker tag candidate jmackie17/csc5991:candidate
           docker push jmackie17/csc5991:candidate
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Communications Container
         run: |
@@ -77,7 +77,7 @@ jobs:
           docker tag configuration jmackie17/csc5991:configuration
           docker push jmackie17/csc5991:configuration
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Employee Container
         run: |
@@ -86,7 +86,7 @@ jobs:
           docker tag employee jmackie17/csc5991:employee
           docker push jmackie17/csc5991:employee
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Gatekeeper Container
         run: |
@@ -95,7 +95,7 @@ jobs:
           docker tag gatekeeper jmackie17/csc5991:gatekeeper
           docker push jmackie17/csc5991:gatekeeper
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Reporting Container
         run: |
@@ -104,7 +104,7 @@ jobs:
           docker tag reporting jmackie17/csc5991:reporting
           docker push jmackie17/csc5991:reporting
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Scheduling Container
         run: |
@@ -113,7 +113,7 @@ jobs:
           docker tag scheduling jmackie17/csc5991:scheduling
           docker push jmackie17/csc5991:scheduling
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
           
       - name: Build and Push Security Container
         run: |
@@ -122,4 +122,4 @@ jobs:
           docker tag security jmackie17/csc5991:security
           docker push jmackie17/csc5991:security
           kubectl apply -f deployment.yaml
-          kubectl apply -f services.yaml
+          kubectl apply -f service.yaml
