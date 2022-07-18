@@ -6,6 +6,6 @@ spec:
   selector:
     app: candidate
   ports:
-    - port: 8080
+    - port: 8002
       targetPort: 80
   type: NodePort

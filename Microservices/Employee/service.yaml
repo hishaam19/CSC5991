@@ -6,6 +6,6 @@ spec:
   selector:
     app: employee
   ports:
-    - port: 8080
+    - port: 8005
       targetPort: 80
   type: NodePort

@@ -6,6 +6,6 @@ spec:
   selector:
     app: configuration
   ports:
-    - port: 8080
+    - port: 8004
       targetPort: 80
   type: NodePort

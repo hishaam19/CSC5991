@@ -53,5 +53,5 @@ COPY --chown=uwsgi:uwsgi src/ /opt/code/
 
 # Run parameters
 WORKDIR /opt/code
-EXPOSE 8080
+EXPOSE 8002
 CMD ["/bin/sh", "/opt/uwsgi/start_server.sh"]
