@@ -1,0 +1,99 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        
+      - name: Login to dockerhub
+        run: docker login --username=jmackie17 --password=${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and Push Availability Container
+        run: |
+          cd Microservices/Availability
+          docker build -t availability .
+          docker tag availability jmackie17/csc5991:availability
+          docker push jmackie17/csc5991:availability
+          
+      - name: Build and Push Calendar Container
+        run: |
+          cd Microservices/Calendar
+          docker build -t calendar .
+          docker tag calendar jmackie17/csc5991:calendar
+          docker push jmackie17/csc5991:calendar
+        
+      - name: Build and Push Candidate Container
+        run: |
+          cd Microservices/Candidate
+          docker build -t candidate .
+          docker tag candidate jmackie17/csc5991:candidate
+          docker push jmackie17/csc5991:candidate
+          
+      - name: Build and Push Communications Container
+        run: |
+          cd Microservices/Communications
+          docker build -t communications .
+          docker tag communications jmackie17/csc5991:communications
+          docker push jmackie17/csc5991:communications
+          
+      - name: Build and Push Configuration Container
+        run: |
+          cd Microservices/Configuration
+          docker build -t configuration .
+          docker tag configuration jmackie17/csc5991:configuration
+          docker push jmackie17/csc5991:configuration
+          
+      - name: Build and Push Employee Container
+        run: |
+          cd Microservices/Employee
+          docker build -t employee .
+          docker tag employee jmackie17/csc5991:employee
+          docker push jmackie17/csc5991:employee
+          
+      - name: Build and Push Gatekeeper Container
+        run: |
+          cd Microservices/Gatekeeper
+          docker build -t gatekeeper .
+          docker tag gatekeeper jmackie17/csc5991:gatekeeper
+          docker push jmackie17/csc5991:gatekeeper
+          
+      - name: Build and Push Reporting Container
+        run: |
+          cd Microservices/Reporting
+          docker build -t reporting .
+          docker tag reporting jmackie17/csc5991:reporting
+          docker push jmackie17/csc5991:reporting
+          
+      - name: Build and Push Scheduling Container
+        run: |
+          cd Microservices/Scheduling
+          docker build -t scheduling .
+          docker tag scheduling jmackie17/csc5991:scheduling
+          docker push jmackie17/csc5991:scheduling
+          
+      - name: Build and Push Security Container
+        run: |
+          cd Microservices/Security
+          docker build -t security .
+          docker tag security jmackie17/csc5991:security
+          docker push jmackie17/csc5991:security
