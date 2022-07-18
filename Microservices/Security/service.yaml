@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: security-service
   labels:
-    app: security
+    app: securityservice
   annotations:
     dev.okteto.com/auto-ingress: "true"
 spec:
   selector:
-    app: security
+    app: securityservice
   ports:
     - port: 8080
       targetPort: 8080
