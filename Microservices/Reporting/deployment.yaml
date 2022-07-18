@@ -16,6 +16,6 @@ spec:
       - name: reporting
         image: jmackie17/csc5991:reporting
         ports:
-        - containerPort: 8080
+        - containerPort: 80
       imagePullSecrets:
       - name: regcred

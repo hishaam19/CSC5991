@@ -16,6 +16,6 @@ spec:
       - name: availability
         image: jmackie17/csc5991:availability
         ports:
-        - containerPort: 8080
+        - containerPort: 80
       imagePullSecrets:
       - name: regcred
