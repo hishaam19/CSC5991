@@ -15,6 +15,7 @@ spec:
       containers:
       - name: calendar
         image: jmackie17/csc5991:calendar
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:

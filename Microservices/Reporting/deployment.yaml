@@ -15,6 +15,7 @@ spec:
       containers:
       - name: reporting
         image: jmackie17/csc5991:reporting
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:

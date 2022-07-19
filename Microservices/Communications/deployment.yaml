@@ -15,6 +15,7 @@ spec:
       containers:
       - name: communications
         image: jmackie17/csc5991:communications
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:

@@ -15,6 +15,7 @@ spec:
       containers:
       - name: candidate
         image: jmackie17/csc5991:candidate
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:
