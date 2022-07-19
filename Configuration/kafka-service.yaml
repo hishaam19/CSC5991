@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  namespace: infrastructure-jmackie80
+  labels:
+    app: kafka
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  selector:
+    app: kafka
+  ports:
+    - port: 29092
+      targetPort: 29092
+      protocol: TCP
+  type: ClusterIP
