@@ -35,18 +35,7 @@ jobs:
           okteto kubeconfig
           
       - name: Delete Deployments
-        run: | 
-          kubectl delete deployment availability
-          kubectl delete deployment candidate
-          kubectl delete deployment calendar
-          kubectl delete deployment communications
-          kubectl delete deployment configuration
-          kubectl delete deployment employee
-          kubectl delete deployment gatekeeper
-          kubectl delete deployment reporting
-          kubectl delete deployment scheduling
-          kubectl delete deployment security
-          kubectl delete deployment securityservice
+        run: kubectl delete deployments --all
 
       - name: Build and Push Availability Container
         run: |
