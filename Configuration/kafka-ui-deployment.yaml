@@ -18,3 +18,8 @@ spec:
         image: provectuslabs/kafka-ui
         ports:
         - containerPort: 8080
+        env:
+        - name: KAFKA_CLUSTERS_0_NAME
+          value: "kafka"
+        - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+          value: "10.152.48.69:9092"
