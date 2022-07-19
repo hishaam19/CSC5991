@@ -15,6 +15,7 @@ spec:
       containers:
       - name: gatekeeper
         image: jmackie17/csc5991:gatekeeper
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:
