@@ -1,5 +1,5 @@
-from flask import Blueprint
-from requests import get
+from flask import Blueprint, request
+from requests import get, put, post, delete
 
 sites = {
     "availability": "https://availability-service-jmackie80.cloud.okteto.net/",
@@ -16,7 +16,17 @@ bp = Blueprint('apiproxy', __name__, url_prefix='/api')
 def proxyRoot():
     return "<p>api proxy</p>"
 
-@bp.route('/<path:api>/', defaults={'path': ''})
-@bp.route('/<path:api>/<path:path>')
+@bp.route('/<path:api>/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'DELETE'])
+@bp.route('/<path:api>/<path:path>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def proxy(api, path):
-  return get(f'{sites[api]}{path}').content
+  print(request.method, request.get_json())
+  if request.method == 'GET':
+    return get(f'{sites[api]}{path}').content
+  if request.method == 'PUT':
+    return put(f'{sites[api]}{path}', data=request.get_json()).content
+  if request.method == 'POST':
+    return post(f'{sites[api]}{path}', data=request.get_json()).content
+  if request.method == 'DELETE':
+    return delete(f'{sites[api]}{path}').content
+  else:
+    return "<p>unknown request</p>"
