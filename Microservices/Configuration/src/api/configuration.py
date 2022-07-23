@@ -15,9 +15,10 @@ def getAllConfiguration():
 @bp.route('/', methods=['POST'])
 def addConfiguration():
     body = request.get_json()
+    print(body)
     new_configuration = Configuration(
-        configurationKey=body.configurationKey,
-        configurationValue=body.configurationValue
+        configurationKey=body['configurationKey'],
+        configurationValue=body['configurationValue']
     )
     db.session.add(new_configuration)
     db.session.commit()
