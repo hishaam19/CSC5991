@@ -14,8 +14,8 @@ sites = {
 }
 """
 
-site_configuration = request.get(f'{CONFIGURATION_URL}configuration/sites')
-sites = site_configuration.configurationValue
+site_configuration = get(f'{CONFIGURATION_URL}configuration/sites').json()
+sites = site_configuration['configurationValue']
 
 bp = Blueprint('apiproxy', __name__, url_prefix='/api')
 
