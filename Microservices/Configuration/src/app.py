@@ -4,6 +4,9 @@ from api import configuration
 
 application = Flask(__name__)
 
+username = "okteto"
+password = "okteto"
+dbname = "Configuration"
 application.config.from_mapping(
     SECRET_KEY='csc5991',
     SQLALCHEMY_DATABASE_URI="postgresql://{username}:{password}@10.152.137.106:5432/{dbname}",

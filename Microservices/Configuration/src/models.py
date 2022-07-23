@@ -2,9 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSONB
 
 db = SQLAlchemy()
-username = "okteto"
-password = "okteto"
-dbname = "Configuration"
 
 class Configuration(db.Model):
     __tablename__ = 'configuration'
