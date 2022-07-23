@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 
 from models import Configuration, db
 
@@ -6,7 +6,11 @@ bp = Blueprint('configuration', __name__, url_prefix='/configuration')
 
 @bp.route('/', methods=['GET'])
 def getAllConfiguration():
-    return Configuration.query.filter()
+    items = Configuration.query.all()
+    result = []
+    for item in items:
+        result.append(item.serialize())
+    return jsonify(result)
 
 @bp.route('/', methods=['POST'])
 def addConfiguration():
@@ -17,11 +21,11 @@ def addConfiguration():
     )
     db.session.add(new_configuration)
     db.session.commit()
-    return new_configuration
+    return jsonify(new_configuration)
 
 @bp.route('/<path:configurationKey>', methods=['GET'])
 def getConfiguration(configurationKey):
-    return Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
+    return jsonify(Configuration.query.filter(Configuration.configurationKey == configurationKey).first())
 
 @bp.route('/<path:configurationKey>', methods=['PUT'])
 def updateConfiguration(configurationKey):
@@ -29,9 +33,9 @@ def updateConfiguration(configurationKey):
     configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
     configuration.configurationValue = body.configurationValue
     db.session.commit()
-    return configuration
+    return jsonify(configuration)
 
 @bp.route('/<path:configurationItem>', methods=['DELETE'])
 def deleteConfiguration(configurationKey):
     configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).delete()
-    return configuration
+    return jsonify(configuration)

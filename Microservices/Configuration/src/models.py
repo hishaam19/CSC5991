@@ -1,13 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app import application
-
-db = SQLAlchemy(application)
+db = SQLAlchemy()
 username = "okteto"
 password = "okteto"
 dbname = "Configuration"
-application.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{username}:{password}@10.152.137.106:5432/{dbname}"
 
 class Configuration(db.Model):
     __tablename__ = 'configuration'
