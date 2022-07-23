@@ -1,6 +1,9 @@
 from flask import Blueprint, request
 from requests import get, put, post, delete
 
+CONFIGURATION_URL = "https://configuration-service-jmackie80.cloud.okteto.net/"
+
+
 sites = {
     "availability": "https://availability-service-jmackie80.cloud.okteto.net/",
     "configuration": "https://configuration-service-jmackie80.cloud.okteto.net/",
@@ -9,6 +12,10 @@ sites = {
     "calendar": "https://calendar-service-jmackie80.cloud.okteto.net/",
     "communications": "https://communications-service-jmackie80.cloud.okteto.net/"
 }
+"""
+site_configuration = request.get(f'{CONFIGURATION_URL}configuration/sites')
+sites = site_configuration.configurationValue
+"""
 
 bp = Blueprint('apiproxy', __name__, url_prefix='/api')
 
@@ -19,7 +26,6 @@ def proxyRoot():
 @bp.route('/<path:api>/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'DELETE'])
 @bp.route('/<path:api>/<path:path>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def proxy(api, path):
-  print(request.method, request.get_json())
   if request.method == 'GET':
     return get(f'{sites[api]}{path}').content
   if request.method == 'PUT':
