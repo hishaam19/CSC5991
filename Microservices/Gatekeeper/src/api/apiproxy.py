@@ -3,7 +3,7 @@ from requests import get, put, post, delete
 
 CONFIGURATION_URL = "https://configuration-service-jmackie80.cloud.okteto.net/"
 
-
+"""
 sites = {
     "availability": "https://availability-service-jmackie80.cloud.okteto.net/",
     "configuration": "https://configuration-service-jmackie80.cloud.okteto.net/",
@@ -13,9 +13,9 @@ sites = {
     "communications": "https://communications-service-jmackie80.cloud.okteto.net/"
 }
 """
+
 site_configuration = request.get(f'{CONFIGURATION_URL}configuration/sites')
 sites = site_configuration.configurationValue
-"""
 
 bp = Blueprint('apiproxy', __name__, url_prefix='/api')
 
