@@ -9,20 +9,19 @@ def getAllConfiguration():
     items = Configuration.query.all()
     result = []
     for item in items:
-        result.append(item.serialize())
+        result.append(item)
     return jsonify(result)
 
 @bp.route('/', methods=['POST'])
 def addConfiguration():
     body = request.get_json()
-    print(body)
     new_configuration = Configuration(
         configurationKey=body['configurationKey'],
         configurationValue=body['configurationValue']
     )
     db.session.add(new_configuration)
     db.session.commit()
-    return jsonify(new_configuration)
+    return jsonify({ "status": "success" })
 
 @bp.route('/<path:configurationKey>', methods=['GET'])
 def getConfiguration(configurationKey):
@@ -34,9 +33,9 @@ def updateConfiguration(configurationKey):
     configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
     configuration.configurationValue = body.configurationValue
     db.session.commit()
-    return jsonify(configuration)
+    return jsonify({ "status": "success" })
 
 @bp.route('/<path:configurationItem>', methods=['DELETE'])
 def deleteConfiguration(configurationKey):
     configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).delete()
-    return jsonify(configuration)
+    return jsonify({ "status": "success" })
