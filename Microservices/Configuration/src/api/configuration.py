@@ -9,7 +9,7 @@ def getAllConfiguration():
     items = Configuration.query.all()
     result = []
     for item in items:
-        result.append(item)
+        result.append(item.serialize())
     return jsonify(result)
 
 @bp.route('/', methods=['POST'])
@@ -21,21 +21,30 @@ def addConfiguration():
     )
     db.session.add(new_configuration)
     db.session.commit()
-    return jsonify({ "status": "success" })
+    return jsonify(new_configuration.serialize())
 
 @bp.route('/<path:configurationKey>', methods=['GET'])
 def getConfiguration(configurationKey):
-    return jsonify(Configuration.query.filter(Configuration.configurationKey == configurationKey).first())
+    configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
+    if configuration is None:
+        return jsonify({})
+    return jsonify(configuration.serialize())
 
 @bp.route('/<path:configurationKey>', methods=['PUT'])
 def updateConfiguration(configurationKey):
     body = request.get_json()
     configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
-    configuration.configurationValue = body.configurationValue
+    if configuration is None:
+        return jsonify({})
+    configuration.configurationValue = body['configurationValue']
     db.session.commit()
-    return jsonify({ "status": "success" })
+    return jsonify(configuration.serialize())
 
-@bp.route('/<path:configurationItem>', methods=['DELETE'])
+@bp.route('/<path:configurationKey>', methods=['DELETE'])
 def deleteConfiguration(configurationKey):
-    configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).delete()
-    return jsonify({ "status": "success" })
+    configuration = Configuration.query.filter(Configuration.configurationKey == configurationKey).first()
+    if configuration is None:
+        return jsonify({})
+    Configuration.query.filter(Configuration.configurationKey == configurationKey).delete()
+    db.session.commit()
+    return jsonify(configuration.serialize())

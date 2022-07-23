@@ -8,3 +8,10 @@ class Configuration(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     configurationKey = db.Column(db.String(128), unique=True, nullable=False)
     configurationValue = db.Column(JSONB)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'configurationKey': self.configurationKey,
+            'configurationValue': self.configurationValue
+        }
