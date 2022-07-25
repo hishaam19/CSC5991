@@ -7,7 +7,7 @@ import re
 app = Flask(__name__)
 app.secret_key = 'okteto'
  
-conn=psycopg2.connect(dbname='Security', user='okteto', host='10.152.137.106', password='okteto', port='5432')
+conn=psycopg2.connect(dbname='Security', user='okteto', host='localhost', password='okteto', port='5432')
 conn.autocommit=True
 cur=conn.cursor() 
  
