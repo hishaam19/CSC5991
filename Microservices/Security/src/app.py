@@ -1,8 +1,11 @@
-from flask import Flask, request, session, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template, jsonify, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2  
 import psycopg2.extras
 import re 
+import jwt
+import datetime
+import uuid
 
 app = Flask(__name__)
 app.secret_key = 'okteto'
@@ -10,89 +13,116 @@ app.secret_key = 'okteto'
 conn=psycopg2.connect(dbname='Security', user='okteto', host='localhost', password='okteto', port='5432')
 conn.autocommit=True
 cur=conn.cursor() 
- 
-@app.route('/')
-def home():    
-    if 'loggedin' in session:    
-       return render_template('home.html', username=session['username'])
-    return redirect(url_for('login'))
- 
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
-    
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
-        print(password) 
-       
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))        
-        account = cursor.fetchone()
- 
-        if account:
-            password_rs = account['password']
-            print(password_rs)
+    loginUser = request.get_json()
+    if request.method == 'POST' and 'username' in loginUser and 'password' in loginUser:
+        username = loginUser['username']
+        password = loginUser['password']
+        user = getUser(username)
+        if user:
+            password_rs = user['password']
             if check_password_hash(password_rs, password):
-                session['loggedin'] = True
-                session['id'] = account['id']
-                session['username'] = account['username']
-                return redirect(url_for('home'))
+                session_id = str(uuid.uuid1())
+                token = str(jwt.encode({
+                    'sessionId' : session_id,
+                    'userName' : username, 
+                    'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)
+                }, app.secret_key, "HS256"), 'utf-8')
+                cursor.execute("UPDATE users SET sessionId='{0}' WHERE username='{1}'".format(session_id, user['userName']))
+                conn.commit()
+                return jsonify({ 'token' : token })
             else:
-                flash('Incorrect username/password')
+                return Response('Incorrect username/password', 400)
         else:
-            flash('Incorrect username/password')
+            return Response('Incorrect username/password', 400)
  
     return render_template('login.html')
   
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
- 
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:     
-        fullname = request.form['fullname']
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-    
+    user = request.get_json()
+    if request.method == 'POST' and 'username' in user and 'password' in user and 'email' in user and 'role' in user:  
+        fullname = user['fullname']
+        username = user['username']
+        password = user['password']
+        role = user['role']
+        email = user['email']
         _hashed_password = generate_password_hash(password)
- 
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        cursor.execute("SELECT * FROM users WHERE username ='{0}'".format(username,))
         account = cursor.fetchone()
-        print(account)
         if account:
-            flash('Account already exists!')
+            return Response('Account already exists!', 400)
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            flash('Invalid email address!')
+            return Response('Invalid email address', 400)
         elif not re.match(r'[A-Za-z0-9]+', username):
-            flash('Username must contain only characters and numbers!')
+            return Response('Username must contain only characters and numbers!', 400)
         elif not username or not password or not email:
-            flash('Please fill out the form!')
+            return Response('Please fill out the form!', 400)
         else:
-            cursor.execute("INSERT INTO users (fullname, username, password, email) VALUES (%s,%s,%s,%s)", (fullname, username, _hashed_password, email))
+            cursor.execute("INSERT INTO users (fullname, username, password, email, role) VALUES ('{0}','{1}','{2}','{3}','{4}')".format(fullname, username, _hashed_password, email, role))
             conn.commit()
-            flash('You have successfully registered!')
-    elif request.method == 'POST':
-        flash('Please fill out the form!')
-    return render_template('register.html')
+            return jsonify(user)
    
    
 @app.route('/logout')
 def logout():
-   session.pop('loggedin', None)
-   session.pop('id', None)
-   session.pop('username', None)
-   return redirect(url_for('login'))
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    user_name = request.headers.get('USER_NAME')
+    cursor.execute("UPDATE users SET sessionId=NULL WHERE username='{0}'".format(user_name))
+    conn.commit()
+    return redirect(url_for('login'))
   
 @app.route('/profile')
 def profile(): 
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-   
-    if 'loggedin' in session:
-        cursor.execute('SELECT * FROM users WHERE id = %s', [session['id']])
-        account = cursor.fetchone()
-        return render_template('profile.html', account=account)
-    return redirect(url_for('login'))
+    user_name = request.headers.get('USER_NAME')
+    user = getUser(user_name)
+    return jsonify(user)
  
+@app.route('/authorize', methods=['POST'])
+def authorize():
+    token = None
+    if 'Authorization' in request.headers:
+        token = request.headers.get('Authorization')
+    user = authenticate(token)
+    if not user:
+        return Response('Not Authenticated', 401)
+    role = user['role']
+    data = request.get_json()
+    destination = data['destination']
+    if role == 'admin' or destination.startswith("availability") or destination.startswith("scheduling"):
+        return jsonify(user)
+    if destination.startswith("candidate") and role == 'candidate':
+        return jsonify(user)
+    if destination.startswith("employee") and (role == 'recruiter' or role == 'interviewer' or role == 'manager'):
+        return jsonify(user)
+    if destination.startswith("security/profile"):
+        return jsonify(user)
+    if destination.startswith("security/logout"):
+        return jsonify(user)
+    return Response('Access Denied', 403)
+
+def authenticate(token):
+    if not token:
+        return None
+    #try:
+    updatedToken = token.replace('Bearer ', '', 1)
+    data = jwt.decode(updatedToken, app.secret_key, algorithms=["HS256"])
+    user = getUser(data['userName'])
+    if not user or user['sessionId'] != data['sessionId']:
+        return None
+    return user
+    #except:
+    #    return None
+
+def getUser(user_name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute("SELECT * FROM users WHERE username='{0}'".format(user_name))
+    account = cursor.fetchone()
+    return { 'fullName' : account['fullname'], 'userName' : account['username'], 'email' : account['email'], 'sessionId': account['sessionid'], 'password': account['password'], 'role': account['role'] }
+
 if __name__ == "__main__":
     app.run(debug=True)
