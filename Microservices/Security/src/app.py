@@ -7,14 +7,14 @@ import jwt
 import datetime
 import uuid
 
-app = Flask(__name__)
-app.secret_key = 'okteto'
+application = Flask(__name__)
+application.secret_key = 'okteto'
  
-conn=psycopg2.connect(dbname='Security', user='okteto', host='localhost', password='okteto', port='5432')
+conn=psycopg2.connect(dbname='Security', user='okteto', host='10.152.137.106', password='okteto', port='5432')
 conn.autocommit=True
 cur=conn.cursor() 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@application.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     loginUser = request.get_json()
@@ -30,7 +30,7 @@ def login():
                     'sessionId' : session_id,
                     'userName' : username, 
                     'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)
-                }, app.secret_key, "HS256"), 'utf-8')
+                }, application.secret_key, "HS256"), 'utf-8')
                 cursor.execute("UPDATE users SET sessionId='{0}' WHERE username='{1}'".format(session_id, user['userName']))
                 conn.commit()
                 return jsonify({ 'token' : token })
@@ -41,7 +41,7 @@ def login():
  
     return render_template('login.html')
   
-@app.route('/register', methods=['GET', 'POST'])
+@application.route('/register', methods=['GET', 'POST'])
 def register():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     user = request.get_json()
@@ -68,7 +68,7 @@ def register():
             return jsonify(user)
    
    
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     user_name = request.headers.get('USER_NAME')
@@ -76,13 +76,13 @@ def logout():
     conn.commit()
     return redirect(url_for('login'))
   
-@app.route('/profile')
+@application.route('/profile')
 def profile(): 
     user_name = request.headers.get('USER_NAME')
     user = getUser(user_name)
     return jsonify(user)
  
-@app.route('/authorize', methods=['POST'])
+@application.route('/authorize', methods=['POST'])
 def authorize():
     token = None
     if 'Authorization' in request.headers:
@@ -110,7 +110,7 @@ def authenticate(token):
         return None
     #try:
     updatedToken = token.replace('Bearer ', '', 1)
-    data = jwt.decode(updatedToken, app.secret_key, algorithms=["HS256"])
+    data = jwt.decode(updatedToken, application.secret_key, algorithms=["HS256"])
     user = getUser(data['userName'])
     if not user or user['sessionId'] != data['sessionId']:
         return None
@@ -123,6 +123,3 @@ def getUser(user_name):
     cursor.execute("SELECT * FROM users WHERE username='{0}'".format(user_name))
     account = cursor.fetchone()
     return { 'fullName' : account['fullname'], 'userName' : account['username'], 'email' : account['email'], 'sessionId': account['sessionid'], 'password': account['password'], 'role': account['role'] }
-
-if __name__ == "__main__":
-    app.run(debug=True)
