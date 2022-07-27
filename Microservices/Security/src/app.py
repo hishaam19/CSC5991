@@ -18,16 +18,13 @@ cur=conn.cursor()
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     loginUser = request.get_json()
-    print('loginUser', loginUser)
     if request.method == 'POST' and 'username' in loginUser and 'password' in loginUser:
         username = loginUser['username']
         password = loginUser['password']
         cursor.execute("SELECT * FROM users WHERE username='{0}'".format(username))
         user = cursor.fetchone()
-        print('user', user)
         if user:
             password_rs = user['password']
-            print('passowrd', password_rs, password)
             if check_password_hash(password_rs, password):
                 session_id = str(uuid.uuid1())
                 token = str(jwt.encode({
@@ -39,10 +36,8 @@ def login():
                 conn.commit()
                 return jsonify({ 'token' : token })
             else:
-                print('400 1')
                 return Response('Incorrect username/password', 400)
         else:
-            print('400 2')
             return Response('Incorrect username/password', 400)
  
     return render_template('login.html')
