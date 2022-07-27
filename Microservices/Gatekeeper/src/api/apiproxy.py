@@ -16,34 +16,38 @@ def proxyRoot():
 @bp.route('/<path:api>/<path:path>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def proxy(api, path):
   full_path = f'{api}/{path}'
-  headers = None
-  print(full_path)
+  headers = request.headers
+  print('full path', full_path, f'{SECURITY_URL}authorize', request.headers.get('Authorization'))
   if full_path != "security/login" and full_path != "security/register":
     # authorize user
-    security_response = post(f'{CONFIGURATION_URL}authorize', data=jsonify({ 'destination': path }), headers={'Authorization': request.headers.get('Authorization')})
+    security_response = post(f'{SECURITY_URL}authorize', data={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
+    print('response', security_response)
     status_code = security_response.status_code
     if status_code == 403:
       return Response('Access Denied', 403)
     if status_code == 401 or status_code >= 300 or status_code < 200:
       return Response('Not Authenticated', 401)
     user = security_response.json()
-    headers = {'USER_NAME': user['userName'], 'USER_SESSION_ID': user['sessionId'], 'USER_FULL_NAME': user['fullName'], 'USER_EMAIL': user['email']}
+    headers['USER_NAME'] = user['userName']
+    headers['USER_SESSION_ID'] = user['sessionId']
+    headers['USER_FULL_NAME'] = user['fullName']
+    headers['USER_EMAIL']= user['email']
 
   # forward to internal service
-  getSites()
-  print(sites)
   if api == "security":
     site_path = f'{SECURITY_URL}{path}'
   else:
+    getSites()
     site_path = f'{sites[api]}{path}'
+  print(site_path, headers, request.get_json())
   if request.method == 'GET':
-    return get(site_path, headers=headers).content
+    return get(url=site_path).content
   if request.method == 'PUT':
-    return put(site_path, data=request.get_json(), headers=headers).content
+    return put(url=site_path, data=request.get_json(), headers=headers).content
   if request.method == 'POST':
-    return post(site_path, data=request.get_json(), headers=headers).content
+    return post(url=site_path, data=request.get_json(), headers={'Content-Type': 'application/json'}).content
   if request.method == 'DELETE':
-    return delete(site_path, headers=headers).content
+    return delete(url=site_path, headers=headers).content
   else:
     return "<p>unknown request</p>"
 
