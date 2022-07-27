@@ -14,7 +14,7 @@ conn=psycopg2.connect(dbname='Security', user='okteto', host='10.152.137.106', p
 conn.autocommit=True
 cur=conn.cursor() 
 
-@application.route('/login/', methods=['GET', 'POST'])
+@application.route('/login', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     loginUser = request.get_json()
@@ -22,7 +22,8 @@ def login():
     if request.method == 'POST' and 'username' in loginUser and 'password' in loginUser:
         username = loginUser['username']
         password = loginUser['password']
-        user = getUser(username)
+        cursor.execute("SELECT * FROM users WHERE username='{0}'".format(username))
+        user = cursor.fetchone()
         print('user', user)
         if user:
             password_rs = user['password']
@@ -34,7 +35,7 @@ def login():
                     'userName' : username, 
                     'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)
                 }, application.secret_key, "HS256"), 'utf-8')
-                cursor.execute("UPDATE users SET sessionId='{0}' WHERE username='{1}'".format(session_id, user['userName']))
+                cursor.execute("UPDATE users SET sessionId='{0}' WHERE username='{1}'".format(session_id, username))
                 conn.commit()
                 return jsonify({ 'token' : token })
             else:

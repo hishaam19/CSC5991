@@ -18,7 +18,7 @@ def proxy(api, path):
   full_path = f'{api}/{path}'
   headers = request.headers
   print('full path', full_path, f'{SECURITY_URL}authorize', request.headers.get('Authorization'))
-  if full_path != "security/login" and full_path != "security/register":
+  if full_path != "security/login/" and full_path != "security/register":
     # authorize user
     security_response = post(f'{SECURITY_URL}authorize', data={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     print('response', security_response)
@@ -39,7 +39,7 @@ def proxy(api, path):
   else:
     getSites()
     site_path = f'{sites[api]}{path}'
-  print(site_path, headers, request.get_json())
+  print(site_path, request.method, request.get_json())
   if request.method == 'GET':
     return get(url=site_path).content
   if request.method == 'PUT':
