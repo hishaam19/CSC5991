@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request, Response, jsonify
 from requests import get, put, post, delete
 
@@ -16,12 +17,11 @@ def proxyRoot():
 @bp.route('/<path:api>/<path:path>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def proxy(api, path):
   full_path = f'{api}/{path}'
-  headers = request.headers
-  print('full path', full_path, f'{SECURITY_URL}authorize', request.headers.get('Authorization'))
-  if full_path != "security/login/" and full_path != "security/register":
+  headers = {'Content-Type': 'application/json'}
+  if full_path != "security/login" and full_path != "security/register":
     # authorize user
-    security_response = post(f'{SECURITY_URL}authorize', data={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
-    print('response', security_response)
+    print(f'{SECURITY_URL}authorize', { 'destination': full_path }, {'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
+    security_response = post(f'{SECURITY_URL}authorize', json={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     status_code = security_response.status_code
     if status_code == 403:
       return Response('Access Denied', 403)
@@ -39,13 +39,12 @@ def proxy(api, path):
   else:
     getSites()
     site_path = f'{sites[api]}{path}'
-  print(site_path, request.method, request.get_json())
   if request.method == 'GET':
     return get(url=site_path).content
   if request.method == 'PUT':
-    return put(url=site_path, data=request.get_json(), headers=headers).content
+    return put(url=site_path, json=request.json, headers=headers).content
   if request.method == 'POST':
-    return post(url=site_path, data=request.get_json(), headers={'Content-Type': 'application/json'}).content
+    return post(url=site_path, json=request.json, headers=headers).content
   if request.method == 'DELETE':
     return delete(url=site_path, headers=headers).content
   else:
