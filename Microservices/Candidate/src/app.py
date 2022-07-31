@@ -6,7 +6,7 @@ application = Flask(__name__)
 
 application.config.from_mapping(
     SECRET_KEY='csc5991',
-    SQLALCHEMY_DATABASE_URI="postgresql://okteto:okteto@localhost:5432/Candidate",
+    SQLALCHEMY_DATABASE_URI="postgresql://okteto:okteto@10.152.137.106:5432/Candidate",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
     SQLALCHEMY_ECHO=True
 )
