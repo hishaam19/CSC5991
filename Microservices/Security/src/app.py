@@ -96,7 +96,7 @@ def authorize():
     destination = data['destination']
     if role == 'admin' or destination.startswith("availability") or destination.startswith("scheduling"):
         return jsonify(user)
-    if destination.startswith("candidate") and role == 'candidate':
+    if destination.startswith("candidate") and (role == 'candidate' or role == 'recruiter'):
         return jsonify(user)
     if destination.startswith("employee") and (role == 'recruiter' or role == 'interviewer' or role == 'manager'):
         return jsonify(user)

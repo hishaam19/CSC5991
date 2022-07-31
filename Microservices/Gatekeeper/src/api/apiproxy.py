@@ -32,6 +32,7 @@ def proxy(api, path):
     headers['USER_SESSION_ID'] = user['sessionId']
     headers['USER_FULL_NAME'] = user['fullName']
     headers['USER_EMAIL']= user['email']
+    headers['USER_ROLE']= user['role']
 
   # forward to internal service
   if api == "security":
