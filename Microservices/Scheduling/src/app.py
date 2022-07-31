@@ -112,15 +112,12 @@ class CalendarView:
                         btn['bg'] = '#aaa'
                         btn['state'] = 'disabled'
     
+
     global conn, cursor
-    conn = psycopg2.connect(
-        host = "10.152.137.106", 
-        dbname = "Scheduling",
-        user = "okteto",
-        password = "okteto", 
-        port = "5432",
-        )
-    cursor = conn.cursor()        
+     
+    conn=psycopg2.connect(dbname='Scheduling', user='okteto', host='10.152.137.106', password='okteto', port='5432')
+    conn.autocommit=True
+    cursor = conn.cursor() 
     
     cursor.execute('''CREATE TABLE IF NOT EXISTS appointments 
                    (app_id serial NOT NULL PRIMARY KEY, 
@@ -305,7 +302,7 @@ def HomeWindow():
                                 messagebox.showerror('Sorry','There are already 2 appointments at this time.')
 
                             elif companys.get() in find:
-                                messagebox.showerror('Not available','This company is not available. Try selecting the other')
+                                messagebox.showerror('Not available','This company is not available. Try to find another schedule')
                             else:
                                 cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
                                 cursor.execute("INSERT INTO appointments (firstname, job, email, date, start_time, end_time, company) VALUES(%s,%s,%s,%s,%s,%s,%s)",(f_name.get(),s_name.get(),email.get(),cal.get_date(),start.get(),end.get(),companys.get()))
@@ -319,7 +316,7 @@ def HomeWindow():
                                 root2.destroy()
                         except:
                             if companys.get() == find:
-                                messagebox.showerror('Not available','This company is not available. Try selecting the other')
+                                messagebox.showerror('Not available','This company is not available. Try to find another schedule')
                             else:
                                 cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
                                 cursor.execute("INSERT INTO appointments (firstname, job, email, date, start_time, end_time, company) VALUES(%s,%s,%s,%s,%s,%s,%s)",(f_name.get(),s_name.get(),email.get(),cal.get_date(),start.get(),end.get(),companys.get()))
@@ -413,7 +410,7 @@ def HomeWindow():
         edit.geometry("{}x{}".format(w-100, h-150))
 
         def selectItem(a):
-            ask = messagebox.askquestion ('Confirmation','Are You sure you want to Edit this appointments%s')
+            ask = messagebox.askquestion ('Confirmation','Are You sure you want to Edit this appointment?')
             if ask == 'yes':
                 curItem = tree.focus()
                 data = tree.item(curItem)['values']
