@@ -16,12 +16,14 @@ def proxyRoot():
 @bp.route('/<path:api>/', defaults={'path': ''}, methods=['GET', 'PUT', 'POST', 'DELETE'])
 @bp.route('/<path:api>/<path:path>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def proxy(api, path):
+  print('proxy')
   full_path = f'{api}/{path}'
   headers = {'Content-Type': 'application/json'}
   if full_path != "security/login" and full_path != "security/register":
     # authorize user
     print(f'{SECURITY_URL}authorize', { 'destination': full_path }, {'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     security_response = post(f'{SECURITY_URL}authorize', json={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
+    print('security response', security_response)
     status_code = security_response.status_code
     if status_code == 403:
       return Response('Access Denied', 403)
@@ -38,10 +40,12 @@ def proxy(api, path):
   if api == "security":
     site_path = f'{SECURITY_URL}{path}'
   else:
+    print('getSites')
     getSites()
     site_path = f'{sites[api]}{path}'
+  print(site_path, headers)
   if request.method == 'GET':
-    return get(url=site_path).content
+    return get(url=site_path, headers=headers).content
   if request.method == 'PUT':
     return put(url=site_path, json=request.json, headers=headers).content
   if request.method == 'POST':
@@ -55,5 +59,6 @@ def getSites():
   global sites
   if sites is None:
     site_configuration = get(f'{CONFIGURATION_URL}configuration/sites').json()
+    print(site_configuration)
     sites = site_configuration['configurationValue']
   return sites
