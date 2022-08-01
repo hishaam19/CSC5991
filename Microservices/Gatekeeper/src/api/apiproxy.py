@@ -3,7 +3,7 @@ from flask import Blueprint, request, Response, jsonify
 from requests import get, put, post, delete
 
 CONFIGURATION_URL = "https://configuration-service-jmackie80.cloud.okteto.net/"
-SECURITY_URL = "https://security-service-jmackie80.cloud.okteto.net/"
+SECURITY_URL = "https://10.155.12.100:8080/"
 
 sites = None
 
@@ -22,7 +22,7 @@ def proxy(api, path):
   if full_path != "security/login" and full_path != "security/register":
     # authorize user
     print(f'{SECURITY_URL}authorize', { 'destination': full_path }, {'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
-    security_response = post(f'{SECURITY_URL}authorize', json={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
+    security_response = post(url=f'{SECURITY_URL}authorize', json={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     print('security response', security_response)
     status_code = security_response.status_code
     if status_code == 403:
@@ -43,7 +43,7 @@ def proxy(api, path):
     print('getSites')
     getSites()
     site_path = f'{sites[api]}{path}'
-  print(site_path, headers)
+  print(site_path, request.json, headers)
   if request.method == 'GET':
     return get(url=site_path, headers=headers).content
   if request.method == 'PUT':
