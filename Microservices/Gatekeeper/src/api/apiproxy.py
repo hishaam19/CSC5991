@@ -2,8 +2,8 @@ import json
 from flask import Blueprint, request, Response, jsonify
 from requests import get, put, post, delete
 
-CONFIGURATION_URL = "https://configuration-service-jmackie80.cloud.okteto.net/"
-SECURITY_URL = "https://10.155.12.100:8080/"
+CONFIGURATION_URL = "http://10.155.196.248:8080/"
+SECURITY_URL = "http://10.155.12.100:8080/"
 
 sites = None
 
