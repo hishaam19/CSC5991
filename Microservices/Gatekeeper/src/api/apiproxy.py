@@ -21,6 +21,7 @@ def proxy(api, path):
   headers = {'Content-Type': 'application/json'}
   if full_path != "security/login" and full_path != "security/register":
     # authorize user
+    """
     print(f'{SECURITY_URL}authorize', { 'destination': full_path }, {'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     security_response = post(url=f'{SECURITY_URL}authorize', json={ 'destination': full_path }, headers={'Authorization': request.headers.get('Authorization'), 'Content-Type': 'application/json'})
     print('security response', security_response)
@@ -35,6 +36,8 @@ def proxy(api, path):
     headers['USER_FULL_NAME'] = user['fullName']
     headers['USER_EMAIL']= user['email']
     headers['USER_ROLE']= user['role']
+    """
+    headers['USER_NAME'] = 'jmackie'
 
   # forward to internal service
   if api == "security":
