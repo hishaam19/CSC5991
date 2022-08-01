@@ -46,12 +46,13 @@ def proxy(api, path):
     print('getSites')
     getSites()
     site_path = f'{sites[api]}{path}'
-  print(site_path, request.json, headers)
+  print(site_path, headers)
   if request.method == 'GET':
     return get(url=site_path, headers=headers).content
   if request.method == 'PUT':
     return put(url=site_path, json=request.json, headers=headers).content
   if request.method == 'POST':
+    print(request.json)
     return post(url=site_path, json=request.json, headers=headers).content
   if request.method == 'DELETE':
     return delete(url=site_path, headers=headers).content
@@ -60,6 +61,7 @@ def proxy(api, path):
 
 def getSites():
   global sites
+  print('sites', sites)
   if sites is None:
     site_configuration = get(f'{CONFIGURATION_URL}configuration/sites').json()
     print(site_configuration)
