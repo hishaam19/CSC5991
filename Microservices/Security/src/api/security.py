@@ -26,6 +26,7 @@ def login():
                     'userName' : username, 
                     'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)
                 }, secret_key, "HS256"), 'utf-8')
+                user.sessionid = session_id
                 db.session.commit()
                 return jsonify({ 'token' : token })
             else:
@@ -111,7 +112,9 @@ def authenticate(token):
     try:
         updatedToken = token.replace('Bearer ', '', 1)
         data = jwt.decode(updatedToken, secret_key, algorithms=["HS256"])
+        print(data)
         user = getUser(data['userName'])
+        print(user)
         if not user or user['sessionId'] != data['sessionId']:
             return None
         return user
