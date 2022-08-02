@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request, jsonify
-from models import Appointment, db, User
+from models import Scheduling, db, User
 from app import application
 import datetime
       
@@ -9,7 +9,7 @@ import datetime
 @application.route('/company_hours', methods=['POST'])
 def company_hours():
     data = request.get_json()
-    hours = Appointment.query.filter_by(company_id=data['company_id']).all()
+    hours = Scheduling.query.filter_by(company_id=data['company_id']).all()
     
     output = []
     
@@ -27,50 +27,50 @@ def company_hours():
         
     return jsonify({'company_hours': output}), 200
 
-#List all appointments
-@application.route('/appointments', methods=['GET'])
-def appointments():
-    all_appointments = Appointment.query.all()
+#List all schedulings
+@application.route('/schedulings', methods=['GET'])
+def schedulings():
+    all_schedulings = Scheduling.query.all()
     
     output = []
     
-    for appointment in all_appointments:
-        appointment_data = {}
-        appointment_data['id'] = appointment.id
-        appointment_data['title'] = appointment.title
-        appointment_data['company_id'] = appointment.company_id
-        appointment_data['company'] = appointment.company.name
-        appointment_data['client_id'] = appointment.client_id
-        appointment_data['client'] = appointment.client.name
-        appointment_data['start_time'] = appointment.start_time
-        appointment_data['end_time'] = appointment.end_time
-        appointment_data['is_active'] = appointment.is_active
-        output.append(appointment_data)        
-    return jsonify({'appointments': output}), 200
+    for scheduling in all_schedulings:
+        scheduling_data = {}
+        scheduling_data['id'] = scheduling.id
+        scheduling_data['title'] = scheduling.title
+        scheduling_data['company_id'] = scheduling.company_id
+        scheduling_data['company'] = scheduling.company.name
+        scheduling_data['client_id'] = scheduling.client_id
+        scheduling_data['client'] = scheduling.client.name
+        scheduling_data['start_time'] = scheduling.start_time
+        scheduling_data['end_time'] = scheduling.end_time
+        scheduling_data['is_active'] = scheduling.is_active
+        output.append(scheduling_data)        
+    return jsonify({'schedulings': output}), 200
 
-#Make, cancel, edit, view appointment
+#Make, cancel, edit, view scheduling
 
-@application.route('/appointment', methods=['GET', 'POST', 'PUT', 'DELETE'])
-def appointment_cruds():
+@application.route('/scheduling', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def scheduling_cruds():
     if request.method == 'GET':
-        all_appointments = Appointment.query.all()
+        all_schedulings = Scheduling.query.all()
     
         output = []
         
-        for appointment in all_appointments:
-            appointment_data = {}
-            appointment_data['id'] = appointment.id
-            appointment_data['title'] = appointment.title
-            appointment_data['company_id'] = appointment.company_id
-            appointment_data['company'] = appointment.company.name
-            appointment_data['client_id'] = appointment.client_id
-            appointment_data['client'] = appointment.client.name
-            appointment_data['start_time'] = appointment.start_time
-            appointment_data['end_time'] = appointment.end_time
-            appointment_data['is_active'] = appointment.is_active
-            output.append(appointment_data)
+        for scheduling in all_schedulings:
+            scheduling_data = {}
+            scheduling_data['id'] = scheduling.id
+            scheduling_data['title'] = scheduling.title
+            scheduling_data['company_id'] = scheduling.company_id
+            scheduling_data['company'] = scheduling.company.name
+            scheduling_data['client_id'] = scheduling.client_id
+            scheduling_data['client'] = scheduling.client.name
+            scheduling_data['start_time'] = scheduling.start_time
+            scheduling_data['end_time'] = scheduling.end_time
+            scheduling_data['is_active'] = scheduling.is_active
+            output.append(scheduling_data)
             
-        return jsonify({'appointments': output}), 200
+        return jsonify({'schedulings': output}), 200
     
     elif request.method == 'PUT':
         data = request.get_json()
@@ -80,7 +80,7 @@ def appointment_cruds():
         end_time = datetime.strptime(data['end_time'], '%d/%m/%y %H:%M')
         
         #Check if slot is available
-        times = Appointment.query.filter_by(is_active=True).all()
+        times = Scheduling.query.filter_by(is_active=True).all()
         
         # Get session duration
         initial_duration = User.query.filter_by(id=data['company_id']).first().session_duration
@@ -102,41 +102,41 @@ def appointment_cruds():
                 return jsonify({'msg': f'Session duration should be {initial_duration} hours'}), 401
             
             if start_time >= time.start_time and end_time <= time.end_time:
-                return jsonify({'msg': 'Appointment not successfully, that session is already booked'}), 401
+                return jsonify({'msg': 'Scheduling not successfully, that session is already booked'}), 401
             
-        add_appointment = Appointment(title=data['title'], company_id=data['company_id'], client_id=data['client_id'], start_time=start_time, end_time=end_time, is_active=True)
-        db.session.add(add_appointment)
+        add_scheduling = Scheduling(title=data['title'], company_id=data['company_id'], client_id=data['client_id'], start_time=start_time, end_time=end_time, is_active=True)
+        db.session.add(add_scheduling)
         db.session.commit()
         
-        return jsonify({'msg': 'Appointment added successfully'}), 201
+        return jsonify({'msg': 'Scheduling added successfully'}), 201
     
     elif request.method == 'POST':
         data = request.get_json()
         
-        appointment = Appointment.query.filter_by(id=data['id'])#.first()
+        scheduling = Scheduling.query.filter_by(id=data['id'])#.first()
         
         if data['title']:
-            appointment.update({'title':data['title']})
+            scheduling.update({'title':data['title']})
             db.session.commit()
             return jsonify({'msg':'Title updated successfully'}), 200
         
         elif data['company_id']:
-            appointment.update({'company_id':data['company_id']})
+            scheduling.update({'company_id':data['company_id']})
             db.session.commit()
             return jsonify({'msg':'Company updated successfully'}), 200
         
         elif data['client_id']:
-            appointment.update({'client_id':data['client_id']})
+            scheduling.update({'client_id':data['client_id']})
             db.session.commit()
             return jsonify({'msg':'Client updated successfully'}), 200
         
         elif data['start_time']:
-            appointment.update({'start_time':datetime.strptime(data['start_time'], '%d/%m/%y %H:%M')})
+            scheduling.update({'start_time':datetime.strptime(data['start_time'], '%d/%m/%y %H:%M')})
             db.session.commit()
             return jsonify({'msg':'Start time updated successfully'}), 200
         
         elif data['end_time']:
-            appointment.update({'end_time':datetime.strptime(data['end_time'], '%d/%m/%y %H:%M')})
+            scheduling.update({'end_time':datetime.strptime(data['end_time'], '%d/%m/%y %H:%M')})
             db.session.commit()
             return jsonify({'msg':'End time updated successfully'}), 200
         
@@ -147,10 +147,10 @@ def appointment_cruds():
         #Soft Delete
         data = request.get_json()
         
-        appointment = Appointment.query.filter_by(id=data['id']).update(dict(is_active=False))
+        scheduling = Scheduling.query.filter_by(id=data['id']).update(dict(is_active=False))
         db.session.commit()
         
-        return jsonify({'msg':'Appointment cancelled successfully'}), 200
+        return jsonify({'msg':'Scheduling cancelled successfully'}), 200
     
     else:
         return jsonify({'msg':'Wrong method'}), 401
