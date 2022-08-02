@@ -1,6 +1,18 @@
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fullname = db.Column(db.String(128))
+    username = db.Column(db.String(128))
+    password = db.Column(db.String(128))
+    email = db.Column(db.String(128))
+    sessionid = db.Column(db.String(128))
+    role = db.Column(db.String(128))
+
+    def __repr__(self):
+        return self.email
 
 class Appointment(db.Model):
     __tablename__ = 'scheduling'
