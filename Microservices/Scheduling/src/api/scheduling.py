@@ -1,12 +1,12 @@
-from flask import Flask
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from models import Scheduling, db, User
-from app import application
 import datetime
-      
+
+bp = Blueprint('scheduling', __name__, url_prefix='/scheduling')      
+
 #List a specific company’s working hours
 
-@application.route('/company_hours', methods=['POST'])
+@bp.route('/company_hours', methods=['POST'])
 def company_hours():
     data = request.get_json()
     hours = Scheduling.query.filter_by(company_id=data['company_id']).all()
@@ -28,7 +28,7 @@ def company_hours():
     return jsonify({'company_hours': output}), 200
 
 #List all schedulings
-@application.route('/schedulings', methods=['GET'])
+@bp.route('/schedulings', methods=['GET'])
 def schedulings():
     all_schedulings = Scheduling.query.all()
     
@@ -50,7 +50,7 @@ def schedulings():
 
 #Make, cancel, edit, view scheduling
 
-@application.route('/scheduling', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@bp.route('/scheduling', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def scheduling_cruds():
     if request.method == 'GET':
         all_schedulings = Scheduling.query.all()
