@@ -1,18 +1,12 @@
-# -*- coding: utf-8 -*-
-
 from datetime import datetime, date
 import smtplib
-
-from flask import (Blueprint, render_template, request, abort, flash, url_for,
-                   redirect, session, current_app, jsonify)
+from flask import (Blueprint, render_template, request, abort, flash, url_for, redirect, session, current_app, jsonify)
 from flask.ext.mail import Message
 from ..extensions import db, mail
 from .forms import MakeAppointmentForm
 from .models import Appointment
 
-
 appointment = Blueprint('appointment', __name__, url_prefix='/appointment')
-
 
 @appointment.route('/create', methods=['GET', 'POST'])
 def create():
@@ -69,7 +63,7 @@ def create():
                 setattr(getattr(form, key), 'data',
                         datetime.strptime(request.args.get(key) or
                                           session.get(key) or
-                                          datetime.today().strftime('%Y-%m-%d'),  # NOQA
+                                          datetime.today().strftime('%Y-%m-%d'),
                                           "%Y-%m-%d"))
             else:
                 setattr(getattr(form, key), 'data',
