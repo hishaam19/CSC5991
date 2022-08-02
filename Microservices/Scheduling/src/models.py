@@ -14,7 +14,7 @@ class User(db.Model):
     def __repr__(self):
         return self.email
 
-class Appointment(db.Model):
+class Scheduling(db.Model):
     __tablename__ = 'scheduling'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
