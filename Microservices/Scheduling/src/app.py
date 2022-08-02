@@ -1,6 +1,6 @@
 from flask import Flask
 
-from api import scheduling
+from api import interview
 
 application = Flask(__name__)
 
@@ -11,7 +11,7 @@ application.config.from_mapping(
     SQLALCHEMY_ECHO=True
 )
 
-application.register_blueprint(scheduling.bp)
+application.register_blueprint(interview.bp)
 
 from models import db
 db.init_app(application)
