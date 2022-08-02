@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request, jsonify
-from models import *
+from models import Appointment, db, User
 from app import application
 import datetime
       
