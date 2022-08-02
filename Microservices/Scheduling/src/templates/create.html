@@ -1,0 +1,51 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = 'Make an appointment' %}
+
+{% extends "layouts/base.html" %}
+
+{% block css_style %}
+<link rel="stylesheet" type="text/css" media="screen"
+      href="{{ url_for('static', filename='css/vendor/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" type="text/css" media="screen"
+      href="{{ url_for('static', filename='css/vendor/jquery-ui-1.10.3.custom.min.css') }}">
+<link rel="stylesheet" type="text/css" media="screen"
+      href="{{ url_for('static', filename='css/time-slider.css') }}">
+<style type="text/css">
+ .icon-calendar {
+     margin-top: 6px;
+ }
+
+ input[type="text"],
+ input[type="email"],
+ input[type="tel"],
+ input[type="search"],
+ input[type="url"],
+ input[type="password"],
+ .ui-autocomplete-input,
+ textarea,
+ .uneditable-input {
+	 font-size: 17px;
+ }
+</style>
+{% endblock %}
+
+{% block body %}
+{{ render_form(url_for('appointment.create'), form, horizontal) }}
+{% endblock %}
+
+{% block js_user %}
+<script src="{{ url_for('static', filename='js/vendor/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/jquery-ui-1.10.3.custom.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slider-init.js') }}"></script>
+<script type="text/javascript">
+ $('.datetimepicker').datetimepicker({
+   format: 'yyyy-MM-dd hh:mm:ss',
+ });
+ $('.datetimepicker-no-time').datetimepicker({
+   pickTime: false,
+   format: 'yyyy-MM-dd'
+ });
+</script>
+
+{% endblock %}
