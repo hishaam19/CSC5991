@@ -18,4 +18,4 @@ db.init_app(application)
 
 @application.route("/", methods=['GET'])
 def hello_world():
-    return "<p>Candidate Service Running</p>"
+    return "<p>Scheduling Service Running</p>"
