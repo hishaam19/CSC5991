@@ -33,6 +33,7 @@ pyrsistent==0.18.1
 pytest==7.1.2
 pytest-flask==1.2.0
 python-dateutil==2.8.2
+sseclient==0.0.27
 pytz==2022.1
 pytz-deprecation-shim==0.1.0.post0
 six==1.16.0
