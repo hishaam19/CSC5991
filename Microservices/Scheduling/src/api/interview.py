@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models import Interview, UserInterview
-from producer import sendNotification
+from producer import sendNotification, updateCalendar
 
 bp = Blueprint('interview', __name__, url_prefix='/interview')
       
@@ -54,6 +54,11 @@ def addUpdateInterview():
         'users': [interview.recruiterusername, interview.candidateusername],
         'message': f"An interview has been updated. Recruiter: {interview.recruiterusername} Candidate: {interview.recruiterusername} Date/Time: {interview.startdatetime}"
     })
+    updateCalendar({
+        'users': [interview.recruiterusername, interview.candidateusername],
+        'title': 'Interview',
+        'dateTime': interview.startdatetime
+    })
     return jsonify(interview.serialize())
 
 @bp.route('/<path:interviewId>', methods=['PUT'])
@@ -64,5 +69,10 @@ def cancelInterview(interviewId):
     sendNotification({
         'users': [interview.recruiterusername, interview.candidateusername],
         'message': f"An interview has been cancelled. Recruiter: {interview.recruiterusername} Candidate: {interview.recruiterusername} Date/Time: {interview.startdatetime}"
+    })
+    updateCalendar({
+        'users': [interview.recruiterusername, interview.candidateusername],
+        'title': 'Interview',
+        'dateTime': interview.startdatetime
     })
     return jsonify(interview)

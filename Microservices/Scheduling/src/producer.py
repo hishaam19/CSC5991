@@ -10,3 +10,6 @@ producer = KafkaProducer(
 
 def sendNotification(notification):
     producer.send('notificationEvent', json.loads(notification))
+
+def updateCalendar(appointment):
+    producer.send('updateCalendarEvent', json.loads(appointment))
