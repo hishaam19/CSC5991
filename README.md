@@ -1,7 +1,7 @@
 # CSC5991
 # Interview regiestration system
 ### Purpose:<br/>
-The purpose of interview registration system is to allow candidates and companies to schedule an interview 
+The purpose of interview registration system is to allow candidates and companies to schedule an interview. Also gives the freedom to cancel or edit an interview and allows the integration of google calendar to personal calendar to remind the candidate when the interview is. 
 ## Functionality:
 ### Our application has the following functionalities:
 Allows candidates to check when the company is free.<br/>
