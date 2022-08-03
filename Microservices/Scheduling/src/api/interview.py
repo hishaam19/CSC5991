@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import Interview, UserInterview
+from models import Interview, UserInterview, db
 from app import application
 import datetime
 
