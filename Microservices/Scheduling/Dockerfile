@@ -1,9 +1,10 @@
+
 ########
 # This image will compile the dependencies
 # It will install compilers and other packages, that won't be carried
 # over to the runtime image
 ########
-FROM alpine:3.15.0 AS compile-image
+FROM alpine:3.9 AS compile-image
 
 # Add requirements for python and pip
 RUN apk add --update python3
@@ -21,7 +22,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip3 install --upgrade pip
 
 # Install and compile uwsgi
-RUN pip3 install uwsgi==2.0.20
+RUN pip3 install uwsgi==2.0.18
 # Install other dependencies
 COPY src/requirements.txt /opt/
 RUN pip3 install -r /opt/requirements.txt
@@ -29,7 +30,7 @@ RUN pip3 install -r /opt/requirements.txt
 ########
 # This image is the runtime, will copy the dependencies from the other
 ########
-FROM alpine:3.15.0 AS runtime-image
+FROM alpine:3.9 AS runtime-image
 
 # Install python
 RUN apk add --update python3 curl libffi postgresql-libs
