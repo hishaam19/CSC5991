@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
-from models import Interview, UserInterview
+from models import Interview, UserInterview, db
 from producer import sendNotification
+from jinja2 import escape
 
 bp = Blueprint('interview', __name__, url_prefix='/interview')
       
