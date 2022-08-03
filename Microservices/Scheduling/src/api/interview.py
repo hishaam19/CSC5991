@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 from models import Interview, UserInterview
-from app import application
-import datetime
+from producer import sendNotification
 
 bp = Blueprint('interview', __name__, url_prefix='/interview')
       
@@ -51,6 +50,10 @@ def addUpdateInterview():
         if 'startDateTime' not in body:
             interview.startdatetime=body['startDateTime']
     db.session.commit()
+    sendNotification({
+        'users': [interview.recruiterusername, interview.candidateusername],
+        'message': f"An interview has been updated. Recruiter: {interview.recruiterusername} Candidate: {interview.recruiterusername} Date/Time: {interview.startdatetime}"
+    })
     return jsonify(interview.serialize())
 
 @bp.route('/<path:interviewId>', methods=['PUT'])
@@ -58,4 +61,8 @@ def cancelInterview(interviewId):
     interview = Interview.query.filter(Interview.id == interviewId).first()
     interview.cancelled=True
     db.session.commit()
+    sendNotification({
+        'users': [interview.recruiterusername, interview.candidateusername],
+        'message': f"An interview has been cancelled. Recruiter: {interview.recruiterusername} Candidate: {interview.recruiterusername} Date/Time: {interview.startdatetime}"
+    })
     return jsonify(interview)
