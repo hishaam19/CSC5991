@@ -1,7 +1,22 @@
-from flask import Flask
+from kafka import KafkaConsumer
+from json import loads
+import json
 
-application = Flask(__name__)
+consumer = KafkaConsumer(
+    'updateCalendarEvent',
+     bootstrap_servers=['10.152.48.69:29092'],
+     auto_offset_reset='earliest',
+     enable_auto_commit=True,
+     group_id='my-group',
+     value_deserializer=lambda x: loads(x.decode('utf-8'))
+)
 
-@application.route("/", methods=['GET'])
-def hello_world():
-    return "<p>Hello, World!</p>"
+def run():
+    for message in consumer:
+        message = message.value
+        json_string = json.dumps(message) 
+        appointment = json.loads(json_string)
+        updateCalendar(appointment['users'], appointment['title'], appointment['startDateTime'])
+
+def updateCalendar(users, title, startDateTime):
+    #update calendar code
