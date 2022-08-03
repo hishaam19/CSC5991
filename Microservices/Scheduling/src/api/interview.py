@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import Interview, UserInterview
+from models import Interview, UserInterview, db
 from producer import sendNotification, updateCalendar
 
 bp = Blueprint('interview', __name__, url_prefix='/interview')
