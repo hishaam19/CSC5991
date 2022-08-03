@@ -1,5 +1,5 @@
 # Application requirements
-flask==1.1.0
+Flask==2.1.0
 flask-restplus==0.12.1
 pytest-flask==0.14.0
 freezegun==0.1.11
@@ -15,4 +15,3 @@ parse==1.12.0
 psycopg2==2.8.2
 sseclient==0.0.27
 Werkzeug==0.16.1
-jinja2<3.1.0
